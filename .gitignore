@@ -1,0 +1,7 @@
+*.js
+node_modules/
+*.map
+example.ts
+example.d.ts
+test.ets
+package-lock.json
