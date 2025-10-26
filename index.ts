@@ -50,11 +50,11 @@ class TypeScriptASTParser {
    * Convert AST node to JSON format
    */
   astToJSON(node: ts.Node): any {
-    // const sourceFile = node.getSourceFile();
+    const sourceFile = node.getSourceFile();
     const result: any = {
       kind: ts.SyntaxKind[node.kind],
-      kindNumber: node.kind,
-      
+      // kindNumber: node.kind,
+      pos: node.getStart
       // text: node.getText().trim()
     };
     if (node.getChildCount() === 0) {
@@ -63,14 +63,14 @@ class TypeScriptASTParser {
 
 
     // Add position information if available
-    // if (sourceFile) {
-    //   const startPos = sourceFile.getLineAndCharacterOfPosition(node.getStart());
-    //   const endPos = sourceFile.getLineAndCharacterOfPosition(node.getEnd());
-    //   result.position = {
-    //     start: { line: startPos.line + 1, column: startPos.character + 1 },
-    //     end: { line: endPos.line + 1, column: endPos.character + 1 }
-    //   };
-    // }
+    if (sourceFile) {
+      const startPos = sourceFile.getLineAndCharacterOfPosition(node.getStart());
+      const endPos = sourceFile.getLineAndCharacterOfPosition(node.getEnd());
+      result.pos = {
+          line: startPos.line + 1, column: startPos.character + 1,
+        // end: { line: endPos.line + 1, column: endPos.character + 1 }
+      };
+    }
 
     // Add children if they exist
     const children = node.getChildren();
