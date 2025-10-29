@@ -8,6 +8,14 @@ You need to install `nodejs` first
 ./build.sh
 ```
 
+## Installl
+
+```
+./install.sh
+```
+
+Then `tsp` command can be used to parse typescript file.
+
 ## Usage
 
 For a typescript file `example.ts`
