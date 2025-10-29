@@ -5,3 +5,4 @@ example.ts
 example.d.ts
 test.ets
 package-lock.json
+dist
