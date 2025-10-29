@@ -3,8 +3,8 @@
   "compilerOptions": {
     // File Layout
     // "rootDir": "./src",
-    // "outDir": "./dist",
-
+    "outDir": "./dist",
+    "experimentalDecorators": true,
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
