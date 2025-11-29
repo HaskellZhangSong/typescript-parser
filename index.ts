@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import * as ts from 'typescript';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -49,25 +50,21 @@ class TypeScriptASTParser {
   /**
    * Convert AST node to JSON format
    */
-  astToJSON(node: ts.Node): any {
+  astToJSON(node: ts.Node, NoPos: boolean = false): any {
     const sourceFile = node.getSourceFile();
     const result: any = {
 
       // kind: ts.SyntaxKind[node.kind],
       kind: node.kind,
-      // kindNumber: node.kind,
-      pos: node.getStart
       // text: node.getText().trim()
     };
     if (node.getChildCount() === 0) {
       result.content = node.getText();
     }
-
-
     // Add position information if available
-    if (sourceFile) {
+    if (!NoPos) {
       const startPos = sourceFile.getLineAndCharacterOfPosition(node.getStart());
-      const endPos = sourceFile.getLineAndCharacterOfPosition(node.getEnd());
+      // const endPos = sourceFile.getLineAndCharacterOfPosition(node.getEnd());
       result.pos = {
           line: startPos.line + 1, column: startPos.character + 1,
         // end: { line: endPos.line + 1, column: endPos.character + 1 }
@@ -77,7 +74,7 @@ class TypeScriptASTParser {
     // Add children if they exist
     const children = node.getChildren();
     if (children.length > 0) {
-      result.children = children.map(child => this.astToJSON(child));
+      result.children = children.map(child => this.astToJSON(child, NoPos));
     }
 
     return result;
@@ -120,6 +117,8 @@ if (outputIndex !== -1 && outputIndex + 1 < args.length) {
   }
 }
 
+var no_need_pos = args.indexOf('--no-pos') >= 0;
+
 // Check if input file exists
 if (!fs.existsSync(inputFile)) {
   console.error(`Error: Input file "${inputFile}" does not exist.`);
@@ -132,7 +131,7 @@ try {
   
   // Parse the AST
   const sourceFile = parser.parse(sourceCode, inputFile);
-  const astJson = parser.astToJSON(sourceFile);
+  const astJson = parser.astToJSON(sourceFile, no_need_pos);
   
   // Write AST to output file
   const compactJsonString = JSON.stringify(astJson);
