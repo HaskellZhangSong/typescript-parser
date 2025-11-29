@@ -52,7 +52,9 @@ class TypeScriptASTParser {
   astToJSON(node: ts.Node): any {
     const sourceFile = node.getSourceFile();
     const result: any = {
-      kind: ts.SyntaxKind[node.kind],
+
+      // kind: ts.SyntaxKind[node.kind],
+      kind: node.kind,
       // kindNumber: node.kind,
       pos: node.getStart
       // text: node.getText().trim()
@@ -96,6 +98,14 @@ if (args.length === 0) {
 const inputFile = args[0];
 if (!inputFile) {
   console.error('Error: Input file is required.');
+
+  const start = 0;
+  const end = ts.SyntaxKind.LastKeyword + 1;
+
+  for (let i = start; i < end; i++) {
+      console.log(`${i} -> ${i as ts.SyntaxKind}`);
+  }
+
   process.exit(1);
 }
 
@@ -125,7 +135,8 @@ try {
   const astJson = parser.astToJSON(sourceFile);
   
   // Write AST to output file
-  fs.writeFileSync(outputFile, JSON.stringify(astJson, null, 2), 'utf8');
+  const compactJsonString = JSON.stringify(astJson);
+  fs.writeFileSync(outputFile, compactJsonString, 'utf8');
   
   console.log(`✅ AST successfully generated!`);
   console.log(`📁 Input: ${inputFile}`);
