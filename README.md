@@ -8,9 +8,17 @@ This document describes how to build a standalone, runnable JavaScript file from
 - Node.js (version 12 or higher recommended)
 - npm (Node Package Manager)
 
+## Build and Install
+Just use the script
+
+```bash
+./build.sh
+./install.sh
+```
+
 ## Building the Standalone Package
 
-To create the standalone JavaScript file, follow these steps:
+If you want to create the standalone JavaScript file solely, follow these steps:
 
 1.  **Install `ncc`**: If you haven't already, install `@vercel/ncc` as a development dependency. `ncc` is a simple CLI for compiling a Node.js module into a single file, together with all its dependencies, quicker and cleaner.
 
