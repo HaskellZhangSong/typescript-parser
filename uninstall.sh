@@ -1,2 +1,2 @@
 #!/bin/bash
-npm unlink tsp
+npm uninstall -g typescript-to-json

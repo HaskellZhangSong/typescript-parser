@@ -1,18 +1,19 @@
 {
-  "name": "tsp",
+  "name": "typescript-to-json",
   "version": "1.0.0",
   "main": "index.js",
   "bin": {
-    "tsp": "./index.js"
+    "typescript-to-json": "./packaged/index.js"
   },
   "pkg": {
     "targets": [
-      "node20-linux-x64"
+      "node20-linux-x64",
+      "node20-macos-arm64"
     ]
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "bundle": "ncc build dist/index.js -o packaged --target es2015"
+    "bundle": "ncc build dist/index.js -o packaged"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "ncc": "^0.3.6",
     "process": "^0.11.10"
   }
 }
