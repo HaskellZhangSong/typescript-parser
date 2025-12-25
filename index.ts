@@ -22,18 +22,18 @@ class TypeScriptASTParser {
   printDetailedAST(node: ts.Node, depth: number = 0): void {
     const indent = '  '.repeat(depth);
     const nodeKind = ts.SyntaxKind[node.kind];
-    
+
     console.log(`${indent}${nodeKind} {`);
     console.log(`${indent}  kind: ${node.kind}`);
     console.log(`${indent}  start: ${node.getStart()}`);
     console.log(`${indent}  end: ${node.getEnd()}`);
     console.log(`${indent}  width: ${node.getWidth()}`);
-    
+
     const nodeText = node.getText().trim();
     if (nodeText) {
       console.log(`${indent}  text: "${nodeText}"`);
     }
-    
+
     // Print children
     const children = node.getChildren();
     if (children.length > 0) {
@@ -43,21 +43,25 @@ class TypeScriptASTParser {
       });
       console.log(`${indent}  ]`);
     }
-    
+
     console.log(`${indent}}`);
   }
 
   /**
    * Convert AST node to JSON format
    */
-  astToJSON(node: ts.Node, NoPos: boolean = false): any {
+  astToJSON(node: ts.Node, NoPos: boolean = false, stringKind: boolean = false): any {
     const sourceFile = node.getSourceFile();
     const result: any = {
-
       // kind: ts.SyntaxKind[node.kind],
       kind: node.kind,
       // text: node.getText().trim()
     };
+
+    if (stringKind) {
+      result.kind = ts.SyntaxKind[node.kind]
+    }
+
     if (node.getChildCount() === 0) {
       result.content = node.getText();
     }
@@ -74,7 +78,7 @@ class TypeScriptASTParser {
     // Add children if they exist
     const children = node.getChildren();
     if (children.length > 0) {
-      result.children = children.map(child => this.astToJSON(child, NoPos));
+      result.children = children.map(child => this.astToJSON(child, NoPos, stringKind));
     }
 
     return result;
@@ -118,6 +122,14 @@ if (outputIndex !== -1 && outputIndex + 1 < args.length) {
 }
 
 var no_need_pos = args.indexOf('--no-pos') >= 0;
+var string_kind = args.indexOf('--string-kind') >= 0;
+var help = args.indexOf('--help') >= 0;
+
+if (help) {
+  console.log("--no-pos" + "\t no position info is emitted")
+  console.log("--string-kind" + "\t output string token kind instead of integers")
+  process.exit(1);
+}
 
 // Check if input file exists
 if (!fs.existsSync(inputFile)) {
@@ -128,19 +140,19 @@ if (!fs.existsSync(inputFile)) {
 try {
   // Read the input file
   const sourceCode = fs.readFileSync(inputFile, 'utf8');
-  
+
   // Parse the AST
   const sourceFile = parser.parse(sourceCode, inputFile);
-  const astJson = parser.astToJSON(sourceFile, no_need_pos);
-  
+  const astJson = parser.astToJSON(sourceFile, no_need_pos, string_kind);
+
   // Write AST to output file
   const compactJsonString = JSON.stringify(astJson);
   fs.writeFileSync(outputFile, compactJsonString, 'utf8');
-  
+
   console.log(`✅ AST successfully generated!`);
   console.log(`📁 Input: ${inputFile}`);
   console.log(`📄 Output: ${outputFile}`);
-  
+
 } catch (error) {
   console.error(`Error processing file: ${error}`);
   process.exit(1);
